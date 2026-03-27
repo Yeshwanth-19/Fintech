@@ -1,0 +1,90 @@
+Gfolio Admin & Corporate Portal UX Specification
+1. Admin Dashboard
+Objective
+Provide real-time visibility into platform performance and risks.
+Widgets
+1 Total AUM, Daily Transactions, Active Users, Gift Volume, Revenue
+2 Transaction Trends, Asset Split, Gifting Trends
+3 Pending KYC, Failed Transactions, Unclaimed Gifts, Settlement Pending
+4 Alerts: high-value transactions, failures, API downtime
+UX Flow
+1 Admin logs in
+2 Views alerts and KPIs
+3 Clicks widgets for deeper insights
+Validations
+1 KPI data consistency checks
+2 Auto alerts for threshold breaches
+3 Auto refresh every 30–60 seconds
+2. User Management
+Widgets
+1 User table with filters (KYC, value, type)
+2 User profile with KYC, transactions, holdings
+UX Flow
+1 Search/filter user
+2 Open profile
+3 Perform admin actions
+Validations
+1 KYC verification required
+2 Duplicate detection
+3 Audit logging
+3. Gifting Operations
+Widgets
+1 Gift orders table
+2 Filters for status and type
+UX Flow
+1 Open gift
+2 View details
+3 Resend/modify/cancel
+Validations
+1 No cancel after redemption
+2 Expiry extension limits
+3 Duplicate prevention
+4. Transaction Management
+Widgets
+1 Transaction table with filters
+UX Flow
+1 View transaction
+2 Retry/refund/escalate
+Validations
+1 Payment vs allocation mismatch
+2 Refund approvals
+3 Duplicate txn prevention
+5. Corporate Admin Portal
+Campaign Creation Flow
+1 Setup campaign details
+2 Upload/select employees
+3 Allocate gifts
+4 Customize message/branding
+5 Schedule
+6 Review and submit
+Validations
+1 CSV validation (email/phone)
+2 Wallet balance check
+3 Schedule validation
+4 Recipient limits
+Bulk Gifting
+1 Upload CSV
+2 Validate entries
+3 Fix errors
+4 Confirm gifting
+Wallet & Budget
+1 Add funds
+2 Track spend
+3 Dept-wise allocation
+Reports
+1 Distribution, redemption, budget usage
+2 Export options
+6. Notifications
+1 Template management
+2 Trigger notifications
+3 Delivery tracking
+7. Edge Cases
+1 Payment success but gift not delivered
+2 User not registered
+3 Wallet insufficient mid-process
+4 API downtime
+5 Partial failures
+8. Role-Based Access
+1 Super Admin, Ops Admin, Finance Admin, Corporate Admin
+2 Permission-based actions
+3 Full audit logging

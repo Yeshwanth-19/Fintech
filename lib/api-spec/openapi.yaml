@@ -1,22 +1,36 @@
 openapi: 3.1.0
 info:
-  # Do not change the title, if the title changes, the import paths will be broken
   title: Api
   version: 0.1.0
-  description: API specification
+  description: Gfolio Admin & Corporate Portal API
 servers:
   - url: /api
     description: Base API path
 tags:
   - name: health
     description: Health operations
+  - name: dashboard
+    description: Admin dashboard metrics
+  - name: users
+    description: User management
+  - name: gifts
+    description: Gifting operations
+  - name: transactions
+    description: Transaction management
+  - name: campaigns
+    description: Corporate campaign management
+  - name: wallet
+    description: Corporate wallet and budget
+  - name: notifications
+    description: Notification management
+  - name: reports
+    description: Reports and exports
 paths:
   /healthz:
     get:
       operationId: healthCheck
       tags: [health]
       summary: Health check
-      description: Returns server health status
       responses:
         "200":
           description: Healthy
@@ -24,6 +38,484 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/HealthStatus"
+
+  /dashboard/metrics:
+    get:
+      operationId: getDashboardMetrics
+      tags: [dashboard]
+      summary: Get dashboard KPI metrics
+      responses:
+        "200":
+          description: Dashboard metrics
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardMetrics"
+
+  /dashboard/alerts:
+    get:
+      operationId: getDashboardAlerts
+      tags: [dashboard]
+      summary: Get active alerts
+      responses:
+        "200":
+          description: Alerts list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Alert"
+
+  /dashboard/transaction-trends:
+    get:
+      operationId: getTransactionTrends
+      tags: [dashboard]
+      summary: Get transaction trends data
+      parameters:
+        - name: period
+          in: query
+          schema:
+            type: string
+            enum: [7d, 30d, 90d]
+      responses:
+        "200":
+          description: Trend data
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TrendPoint"
+
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      summary: List users with filters
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: kycStatus
+          in: query
+          schema:
+            type: string
+            enum: [pending, verified, rejected, all]
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: userType
+          in: query
+          schema:
+            type: string
+            enum: [individual, corporate, all]
+      responses:
+        "200":
+          description: Users list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserListResponse"
+
+  /users/{userId}:
+    get:
+      operationId: getUserById
+      tags: [users]
+      summary: Get user profile
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: User profile
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+
+  /users/{userId}/kyc:
+    patch:
+      operationId: updateUserKyc
+      tags: [users]
+      summary: Update user KYC status
+      parameters:
+        - name: userId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/KycUpdateRequest"
+      responses:
+        "200":
+          description: KYC updated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserProfile"
+
+  /gifts:
+    get:
+      operationId: listGifts
+      tags: [gifts]
+      summary: List gift orders
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [pending, delivered, redeemed, expired, cancelled, all]
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [digital, physical, all]
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Gifts list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GiftListResponse"
+
+  /gifts/{giftId}:
+    get:
+      operationId: getGiftById
+      tags: [gifts]
+      summary: Get gift details
+      parameters:
+        - name: giftId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Gift details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GiftOrder"
+
+  /gifts/{giftId}/resend:
+    post:
+      operationId: resendGift
+      tags: [gifts]
+      summary: Resend a gift
+      parameters:
+        - name: giftId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Gift resent
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GiftOrder"
+
+  /gifts/{giftId}/cancel:
+    post:
+      operationId: cancelGift
+      tags: [gifts]
+      summary: Cancel a gift
+      parameters:
+        - name: giftId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Gift cancelled
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GiftOrder"
+
+  /transactions:
+    get:
+      operationId: listTransactions
+      tags: [transactions]
+      summary: List transactions with filters
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [success, failed, pending, refunded, all]
+        - name: type
+          in: query
+          schema:
+            type: string
+            enum: [purchase, gift, refund, settlement, all]
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: dateFrom
+          in: query
+          schema:
+            type: string
+        - name: dateTo
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Transactions list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TransactionListResponse"
+
+  /transactions/{txnId}:
+    get:
+      operationId: getTransactionById
+      tags: [transactions]
+      summary: Get transaction details
+      parameters:
+        - name: txnId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Transaction details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+
+  /transactions/{txnId}/retry:
+    post:
+      operationId: retryTransaction
+      tags: [transactions]
+      summary: Retry a failed transaction
+      parameters:
+        - name: txnId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Transaction retried
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+
+  /transactions/{txnId}/refund:
+    post:
+      operationId: refundTransaction
+      tags: [transactions]
+      summary: Initiate a refund
+      parameters:
+        - name: txnId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Refund initiated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Transaction"
+
+  /campaigns:
+    get:
+      operationId: listCampaigns
+      tags: [campaigns]
+      summary: List corporate campaigns
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [draft, scheduled, active, completed, cancelled, all]
+      responses:
+        "200":
+          description: Campaigns list
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CampaignListResponse"
+    post:
+      operationId: createCampaign
+      tags: [campaigns]
+      summary: Create a new campaign
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCampaignRequest"
+      responses:
+        "201":
+          description: Campaign created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Campaign"
+
+  /campaigns/{campaignId}:
+    get:
+      operationId: getCampaignById
+      tags: [campaigns]
+      summary: Get campaign details
+      parameters:
+        - name: campaignId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Campaign details
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Campaign"
+
+  /wallet:
+    get:
+      operationId: getWalletBalance
+      tags: [wallet]
+      summary: Get corporate wallet balance
+      responses:
+        "200":
+          description: Wallet info
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WalletInfo"
+
+  /wallet/transactions:
+    get:
+      operationId: getWalletTransactions
+      tags: [wallet]
+      summary: Get wallet transaction history
+      responses:
+        "200":
+          description: Wallet transactions
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/WalletTransaction"
+
+  /notifications:
+    get:
+      operationId: listNotificationTemplates
+      tags: [notifications]
+      summary: List notification templates
+      responses:
+        "200":
+          description: Templates list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/NotificationTemplate"
+
+  /notifications/logs:
+    get:
+      operationId: getNotificationLogs
+      tags: [notifications]
+      summary: Get notification delivery logs
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Notification logs
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationLogResponse"
+
+  /reports/distribution:
+    get:
+      operationId: getDistributionReport
+      tags: [reports]
+      summary: Get gift distribution report
+      responses:
+        "200":
+          description: Distribution report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DistributionReport"
+
+  /reports/redemption:
+    get:
+      operationId: getRedemptionReport
+      tags: [reports]
+      summary: Get redemption report
+      responses:
+        "200":
+          description: Redemption report
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RedemptionReport"
+
 components:
   schemas:
     HealthStatus:
@@ -34,3 +526,628 @@ components:
       required:
         - status
 
+    DashboardMetrics:
+      type: object
+      properties:
+        totalAum:
+          type: number
+        dailyTransactions:
+          type: integer
+        activeUsers:
+          type: integer
+        giftVolume:
+          type: number
+        revenue:
+          type: number
+        pendingKyc:
+          type: integer
+        failedTransactions:
+          type: integer
+        unclaimedGifts:
+          type: integer
+        settlementPending:
+          type: number
+        aumChange:
+          type: number
+        transactionChange:
+          type: number
+        userChange:
+          type: number
+        revenueChange:
+          type: number
+      required:
+        - totalAum
+        - dailyTransactions
+        - activeUsers
+        - giftVolume
+        - revenue
+        - pendingKyc
+        - failedTransactions
+        - unclaimedGifts
+        - settlementPending
+        - aumChange
+        - transactionChange
+        - userChange
+        - revenueChange
+
+    Alert:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [high_value_transaction, failed_transaction, api_downtime, kyc_pending, settlement_overdue]
+        message:
+          type: string
+        severity:
+          type: string
+          enum: [critical, warning, info]
+        timestamp:
+          type: string
+        resolved:
+          type: boolean
+      required:
+        - id
+        - type
+        - message
+        - severity
+        - timestamp
+        - resolved
+
+    TrendPoint:
+      type: object
+      properties:
+        date:
+          type: string
+        transactions:
+          type: integer
+        volume:
+          type: number
+        gifts:
+          type: integer
+      required:
+        - date
+        - transactions
+        - volume
+        - gifts
+
+    UserListResponse:
+      type: object
+      properties:
+        users:
+          type: array
+          items:
+            $ref: "#/components/schemas/User"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required:
+        - users
+        - total
+        - page
+        - limit
+
+    User:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        kycStatus:
+          type: string
+          enum: [pending, verified, rejected]
+        userType:
+          type: string
+          enum: [individual, corporate]
+        totalInvested:
+          type: number
+        joinedAt:
+          type: string
+        lastActive:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - phone
+        - kycStatus
+        - userType
+        - totalInvested
+        - joinedAt
+        - lastActive
+
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        kycStatus:
+          type: string
+          enum: [pending, verified, rejected]
+        kycDocuments:
+          type: array
+          items:
+            type: string
+        userType:
+          type: string
+          enum: [individual, corporate]
+        totalInvested:
+          type: number
+        portfolioValue:
+          type: number
+        giftsReceived:
+          type: integer
+        giftsSent:
+          type: integer
+        joinedAt:
+          type: string
+        lastActive:
+          type: string
+        address:
+          type: string
+        panNumber:
+          type: string
+      required:
+        - id
+        - name
+        - email
+        - phone
+        - kycStatus
+        - userType
+        - totalInvested
+        - portfolioValue
+        - giftsReceived
+        - giftsSent
+        - joinedAt
+        - lastActive
+
+    KycUpdateRequest:
+      type: object
+      properties:
+        status:
+          type: string
+          enum: [verified, rejected]
+        remarks:
+          type: string
+      required:
+        - status
+
+    GiftListResponse:
+      type: object
+      properties:
+        gifts:
+          type: array
+          items:
+            $ref: "#/components/schemas/GiftOrder"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required:
+        - gifts
+        - total
+        - page
+        - limit
+
+    GiftOrder:
+      type: object
+      properties:
+        id:
+          type: string
+        senderId:
+          type: string
+        senderName:
+          type: string
+        recipientName:
+          type: string
+        recipientEmail:
+          type: string
+        recipientPhone:
+          type: string
+        amount:
+          type: number
+        assetType:
+          type: string
+        status:
+          type: string
+          enum: [pending, delivered, redeemed, expired, cancelled]
+        type:
+          type: string
+          enum: [digital, physical]
+        message:
+          type: string
+        createdAt:
+          type: string
+        expiresAt:
+          type: string
+        redeemedAt:
+          type: string
+        campaignId:
+          type: string
+      required:
+        - id
+        - senderId
+        - senderName
+        - recipientName
+        - recipientEmail
+        - amount
+        - assetType
+        - status
+        - type
+        - createdAt
+        - expiresAt
+
+    TransactionListResponse:
+      type: object
+      properties:
+        transactions:
+          type: array
+          items:
+            $ref: "#/components/schemas/Transaction"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required:
+        - transactions
+        - total
+        - page
+        - limit
+
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: string
+        userId:
+          type: string
+        userName:
+          type: string
+        type:
+          type: string
+          enum: [purchase, gift, refund, settlement]
+        amount:
+          type: number
+        status:
+          type: string
+          enum: [success, failed, pending, refunded]
+        paymentMethod:
+          type: string
+        referenceId:
+          type: string
+        description:
+          type: string
+        createdAt:
+          type: string
+        updatedAt:
+          type: string
+        failureReason:
+          type: string
+      required:
+        - id
+        - userId
+        - userName
+        - type
+        - amount
+        - status
+        - paymentMethod
+        - createdAt
+        - updatedAt
+
+    CampaignListResponse:
+      type: object
+      properties:
+        campaigns:
+          type: array
+          items:
+            $ref: "#/components/schemas/Campaign"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required:
+        - campaigns
+        - total
+        - page
+        - limit
+
+    Campaign:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        status:
+          type: string
+          enum: [draft, scheduled, active, completed, cancelled]
+        totalBudget:
+          type: number
+        spent:
+          type: number
+        totalRecipients:
+          type: integer
+        deliveredCount:
+          type: integer
+        redeemedCount:
+          type: integer
+        giftAmount:
+          type: number
+        assetType:
+          type: string
+        scheduledAt:
+          type: string
+        createdAt:
+          type: string
+        completedAt:
+          type: string
+        department:
+          type: string
+        customMessage:
+          type: string
+      required:
+        - id
+        - name
+        - status
+        - totalBudget
+        - spent
+        - totalRecipients
+        - deliveredCount
+        - redeemedCount
+        - giftAmount
+        - assetType
+        - createdAt
+
+    CreateCampaignRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        giftAmount:
+          type: number
+        assetType:
+          type: string
+        totalBudget:
+          type: number
+        scheduledAt:
+          type: string
+        department:
+          type: string
+        customMessage:
+          type: string
+      required:
+        - name
+        - giftAmount
+        - assetType
+        - totalBudget
+
+    WalletInfo:
+      type: object
+      properties:
+        balance:
+          type: number
+        totalAdded:
+          type: number
+        totalSpent:
+          type: number
+        pendingAmount:
+          type: number
+        departmentAllocations:
+          type: array
+          items:
+            $ref: "#/components/schemas/DepartmentAllocation"
+      required:
+        - balance
+        - totalAdded
+        - totalSpent
+        - pendingAmount
+        - departmentAllocations
+
+    DepartmentAllocation:
+      type: object
+      properties:
+        department:
+          type: string
+        allocated:
+          type: number
+        spent:
+          type: number
+      required:
+        - department
+        - allocated
+        - spent
+
+    WalletTransaction:
+      type: object
+      properties:
+        id:
+          type: string
+        type:
+          type: string
+          enum: [credit, debit]
+        amount:
+          type: number
+        description:
+          type: string
+        balance:
+          type: number
+        createdAt:
+          type: string
+      required:
+        - id
+        - type
+        - amount
+        - description
+        - balance
+        - createdAt
+
+    NotificationTemplate:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        trigger:
+          type: string
+        channel:
+          type: string
+          enum: [email, sms, push, whatsapp]
+        subject:
+          type: string
+        body:
+          type: string
+        active:
+          type: boolean
+        createdAt:
+          type: string
+      required:
+        - id
+        - name
+        - trigger
+        - channel
+        - subject
+        - body
+        - active
+        - createdAt
+
+    NotificationLogResponse:
+      type: object
+      properties:
+        logs:
+          type: array
+          items:
+            $ref: "#/components/schemas/NotificationLog"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required:
+        - logs
+        - total
+        - page
+        - limit
+
+    NotificationLog:
+      type: object
+      properties:
+        id:
+          type: string
+        templateId:
+          type: string
+        templateName:
+          type: string
+        recipient:
+          type: string
+        channel:
+          type: string
+          enum: [email, sms, push, whatsapp]
+        status:
+          type: string
+          enum: [sent, delivered, failed, pending]
+        sentAt:
+          type: string
+        deliveredAt:
+          type: string
+      required:
+        - id
+        - templateId
+        - templateName
+        - recipient
+        - channel
+        - status
+        - sentAt
+
+    DistributionReport:
+      type: object
+      properties:
+        totalGifts:
+          type: integer
+        totalValue:
+          type: number
+        byStatus:
+          type: array
+          items:
+            type: object
+            properties:
+              status:
+                type: string
+              count:
+                type: integer
+              value:
+                type: number
+            required:
+              - status
+              - count
+              - value
+        byAsset:
+          type: array
+          items:
+            type: object
+            properties:
+              asset:
+                type: string
+              count:
+                type: integer
+              value:
+                type: number
+            required:
+              - asset
+              - count
+              - value
+        byMonth:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrendPoint"
+      required:
+        - totalGifts
+        - totalValue
+        - byStatus
+        - byAsset
+        - byMonth
+
+    RedemptionReport:
+      type: object
+      properties:
+        totalRedeemed:
+          type: integer
+        redemptionRate:
+          type: number
+        avgTimeToRedeem:
+          type: number
+        byMonth:
+          type: array
+          items:
+            $ref: "#/components/schemas/TrendPoint"
+      required:
+        - totalRedeemed
+        - redemptionRate
+        - avgTimeToRedeem
+        - byMonth

@@ -1,0 +1,65 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+@import "tailwindcss";
+
+@theme inline {
+  --font-sans: 'Plus Jakarta Sans', sans-serif;
+  
+  --color-background: hsl(0 0% 4%); /* #0A0A0A */
+  --color-foreground: hsl(0 0% 100%);
+  
+  --color-primary: hsl(38 92% 50%); /* #F59E0B */
+  --color-primary-foreground: hsl(0 0% 4%);
+  
+  --color-card: hsl(215 22% 11%); /* #151A21 */
+  --color-card-foreground: hsl(0 0% 100%);
+  
+  --color-border: hsl(215 19% 20%);
+  --color-input: hsl(215 19% 20%);
+  --color-ring: hsl(38 92% 50%);
+  
+  --color-muted: hsl(215 22% 15%);
+  --color-muted-foreground: hsl(215 16% 60%);
+  
+  --color-accent: hsl(38 92% 50% / 0.1);
+  --color-accent-foreground: hsl(38 92% 50%);
+  
+  --color-destructive: hsl(0 84% 60%);
+  --color-destructive-foreground: hsl(0 0% 100%);
+
+  --color-success: hsl(142 71% 45%);
+  --color-success-foreground: hsl(142 71% 10%);
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply font-sans antialiased bg-background text-foreground;
+  }
+  
+  /* Custom scrollbar for webkit */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    @apply bg-background;
+  }
+  ::-webkit-scrollbar-thumb {
+    @apply bg-muted rounded-full;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    @apply bg-border;
+  }
+}
+
+/* Premium utilities */
+@layer utilities {
+  .glass-panel {
+    @apply bg-card/80 backdrop-blur-xl border border-white/5 shadow-2xl;
+  }
+  .text-gradient {
+    @apply bg-clip-text text-transparent bg-gradient-to-r from-primary to-amber-300;
+  }
+}
