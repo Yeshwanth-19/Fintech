@@ -55,19 +55,19 @@ export default function CampaignsList() {
             <form onSubmit={handleCreate} className="space-y-6 mt-4">
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">Campaign Name</label>
+                  <label className="text-sm font-medium text-foreground">Campaign Name</label>
                   <Input name="name" required placeholder="e.g. Diwali Bonus 2024" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">Department</label>
+                  <label className="text-sm font-medium text-foreground">Department</label>
                   <Input name="dept" placeholder="e.g. Sales, HR, All" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">Gift Amount per Person (₹)</label>
+                  <label className="text-sm font-medium text-foreground">Gift Amount per Person (₹)</label>
                   <Input name="amount" type="number" required placeholder="10000" />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium text-white">Asset Type</label>
+                  <label className="text-sm font-medium text-foreground">Asset Type</label>
                   <select className="w-full h-11 rounded-xl border border-border bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary">
                     <option>24K Digital Gold</option>
                     <option>Digital Silver</option>
@@ -78,12 +78,12 @@ export default function CampaignsList() {
               <div className="p-4 border border-primary/20 bg-primary/5 rounded-xl flex items-start gap-4">
                 <Target className="w-6 h-6 text-primary mt-1" />
                 <div>
-                  <h4 className="font-semibold text-white">Next Steps after creation:</h4>
+                  <h4 className="font-semibold text-foreground">Next Steps after creation:</h4>
                   <p className="text-sm text-muted-foreground mt-1">You will be prompted to upload a CSV file with recipient details (Name, Email, Phone) on the campaign details page.</p>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-3 pt-4 border-t border-white/10">
+              <div className="flex justify-end gap-3 pt-4 border-t border-border">
                 <Button type="button" variant="ghost" onClick={() => setIsModalOpen(false)}>Cancel</Button>
                 <Button type="submit" disabled={isPending}>{isPending ? 'Creating...' : 'Create Draft'}</Button>
               </div>
@@ -105,27 +105,27 @@ export default function CampaignsList() {
                   <span className="text-xs text-muted-foreground font-mono">{campaign.id}</span>
                 </div>
                 
-                <h3 className="text-xl font-bold text-white mb-2 group-hover:text-primary transition-colors">{campaign.name}</h3>
+                <h3 className="text-xl font-bold text-foreground mb-2 group-hover:text-primary transition-colors">{campaign.name}</h3>
                 
                 <div className="flex items-center gap-2 text-sm text-muted-foreground mb-6">
                   <Building2 className="w-4 h-4" /> {campaign.department}
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-white/5 rounded-xl border border-white/5">
+                <div className="grid grid-cols-2 gap-4 mb-6 p-4 bg-muted rounded-xl border border-border">
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Budget</p>
-                    <p className="font-bold text-white">{formatCurrency(campaign.totalBudget)}</p>
+                    <p className="font-bold text-foreground">{formatCurrency(campaign.totalBudget)}</p>
                   </div>
                   <div>
                     <p className="text-xs text-muted-foreground mb-1">Gift Amount</p>
-                    <p className="font-bold text-white">{formatCurrency(campaign.giftAmount)}</p>
+                    <p className="font-bold text-foreground">{formatCurrency(campaign.giftAmount)}</p>
                   </div>
                 </div>
 
                 <div className="mt-auto space-y-2">
                   <div className="flex justify-between text-sm">
                     <span className="text-muted-foreground flex items-center gap-1"><Users className="w-4 h-4" /> Recipients</span>
-                    <span className="font-medium text-white">{campaign.redeemedCount} / {campaign.totalRecipients} Redeemed</span>
+                    <span className="font-medium text-foreground">{campaign.redeemedCount} / {campaign.totalRecipients} Redeemed</span>
                   </div>
                   <div className="w-full h-2 bg-black rounded-full overflow-hidden">
                     <div 
@@ -135,7 +135,7 @@ export default function CampaignsList() {
                   </div>
                 </div>
               </CardContent>
-              <div className="p-4 border-t border-white/5 bg-white/[0.02] flex justify-between items-center">
+              <div className="p-4 border-t border-border bg-muted/50 flex justify-between items-center">
                 <span className="text-xs text-muted-foreground">Created {formatDate(campaign.createdAt)}</span>
                 <Button variant="ghost" size="sm" className="text-primary hover:text-primary hover:bg-primary/10">Manage</Button>
               </div>

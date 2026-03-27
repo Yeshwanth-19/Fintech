@@ -39,10 +39,12 @@ const MOCK_TRENDS = [
 ];
 
 const ASSET_SPLIT = [
-  { name: 'Gold', value: 65 },
-  { name: 'Silver', value: 35 },
+  { name: 'Gold ETF', value: 45 },
+  { name: 'Nifty Index', value: 25 },
+  { name: 'Silver ETF', value: 18 },
+  { name: 'Sov Gold Bond', value: 12 },
 ];
-const COLORS = ['#F59E0B', '#9CA3AF'];
+const COLORS = ['#F59E0B', '#16a34a', '#86efac', '#fcd34d'];
 
 export default function Dashboard() {
   const { data: metricsData, isError: metricsError } = useGetDashboardMetrics();
@@ -62,7 +64,7 @@ export default function Dashboard() {
             <div key={alert.id} className="flex items-center gap-3 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive-foreground">
               <AlertTriangle className="w-5 h-5 text-destructive" />
               <div className="flex-1">
-                <p className="text-sm font-medium text-white">{alert.message}</p>
+                <p className="text-sm font-medium text-foreground">{alert.message}</p>
                 <p className="text-xs text-muted-foreground">{alert.timestamp}</p>
               </div>
             </div>
@@ -103,7 +105,7 @@ export default function Dashboard() {
         <Card className="col-span-2">
           <CardHeader className="flex flex-row items-center justify-between">
             <CardTitle>Transaction Trends</CardTitle>
-            <select className="bg-transparent border border-white/10 rounded-lg text-sm px-2 py-1 text-white outline-none">
+            <select className="bg-transparent border border-border rounded-lg text-sm px-2 py-1 text-foreground outline-none">
               <option value="7d">Last 7 Days</option>
               <option value="30d">Last 30 Days</option>
               <option value="90d">Last 90 Days</option>
@@ -115,18 +117,18 @@ export default function Dashboard() {
                 <AreaChart data={trends} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
                   <defs>
                     <linearGradient id="colorVolume" x1="0" y1="0" x2="0" y2="1">
-                      <stop offset="5%" stopColor="#F59E0B" stopOpacity={0.3}/>
-                      <stop offset="95%" stopColor="#F59E0B" stopOpacity={0}/>
+                      <stop offset="5%" stopColor="#16a34a" stopOpacity={0.25}/>
+                      <stop offset="95%" stopColor="#16a34a" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                  <XAxis dataKey="date" stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} />
-                  <YAxis stroke="#ffffff50" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${val/1000}k`} />
+                  <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
+                  <XAxis dataKey="date" stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} />
+                  <YAxis stroke="#9ca3af" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `₹${val/1000}k`} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#151A21', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                    itemStyle={{ color: '#fff' }}
+                    contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                    itemStyle={{ color: '#111827' }}
                   />
-                  <Area type="monotone" dataKey="volume" stroke="#F59E0B" strokeWidth={3} fillOpacity={1} fill="url(#colorVolume)" />
+                  <Area type="monotone" dataKey="volume" stroke="#16a34a" strokeWidth={2.5} fillOpacity={1} fill="url(#colorVolume)" />
                 </AreaChart>
               </ResponsiveContainer>
             </div>
@@ -153,8 +155,8 @@ export default function Dashboard() {
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#151A21', border: 'none', borderRadius: '8px' }}
-                  itemStyle={{ color: '#fff' }}
+                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                  itemStyle={{ color: '#111827' }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -162,7 +164,7 @@ export default function Dashboard() {
               {ASSET_SPLIT.map((asset, i) => (
                 <div key={asset.name} className="flex items-center gap-2">
                   <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS[i] }} />
-                  <span className="text-sm text-white">{asset.name} ({asset.value}%)</span>
+                  <span className="text-sm text-foreground">{asset.name} ({asset.value}%)</span>
                 </div>
               ))}
             </div>
@@ -187,7 +189,7 @@ function MetricCard({ title, value, change, icon: Icon }: any) {
     <Card className="hover:border-primary/50 transition-colors duration-300">
       <CardContent className="p-6">
         <div className="flex justify-between items-start mb-4">
-          <div className="p-3 rounded-xl bg-white/5 text-primary">
+          <div className="p-3 rounded-xl bg-primary/10 text-primary">
             <Icon className="w-6 h-6" />
           </div>
           <div className={`flex items-center gap-1 text-sm font-medium ${isPositive ? 'text-emerald-500' : 'text-red-500'}`}>
@@ -196,7 +198,7 @@ function MetricCard({ title, value, change, icon: Icon }: any) {
           </div>
         </div>
         <p className="text-muted-foreground text-sm font-medium mb-1">{title}</p>
-        <h3 className="text-2xl font-bold text-white tracking-tight">{value}</h3>
+        <h3 className="text-2xl font-bold text-foreground tracking-tight">{value}</h3>
       </CardContent>
     </Card>
   );
@@ -204,13 +206,13 @@ function MetricCard({ title, value, change, icon: Icon }: any) {
 
 function ActionCard({ title, value }: any) {
   return (
-    <Card className="bg-gradient-to-br from-card to-background border-white/5">
+    <Card className="bg-gradient-to-br from-card to-background border-border">
       <CardContent className="p-5 flex items-center justify-between">
         <div>
           <p className="text-sm text-muted-foreground mb-1">{title}</p>
-          <p className="text-xl font-bold text-white">{value}</p>
+          <p className="text-xl font-bold text-foreground">{value}</p>
         </div>
-        <div className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-primary/20 hover:text-primary hover:border-primary/50 cursor-pointer transition-all">
+        <div className="w-10 h-10 rounded-full border border-border flex items-center justify-center hover:bg-primary/10 hover:text-primary hover:border-primary/40 cursor-pointer transition-all text-muted-foreground">
           <ArrowUpRight className="w-4 h-4" />
         </div>
       </CardContent>

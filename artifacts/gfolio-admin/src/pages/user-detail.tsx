@@ -49,7 +49,7 @@ export default function UserDetail() {
               <div className="w-24 h-24 mx-auto rounded-full bg-primary/20 flex items-center justify-center text-primary text-3xl font-bold mb-4">
                 {localProfile.name.charAt(0)}
               </div>
-              <h2 className="text-xl font-bold text-white">{localProfile.name}</h2>
+              <h2 className="text-xl font-bold text-foreground">{localProfile.name}</h2>
               <p className="text-muted-foreground capitalize mb-4">{localProfile.userType} Account</p>
               <Badge variant={
                 localProfile.kycStatus === 'verified' ? 'success' : 
@@ -67,19 +67,19 @@ export default function UserDetail() {
             <CardContent className="space-y-4">
               <div className="flex items-center gap-3 text-sm">
                 <Mail className="w-4 h-4 text-muted-foreground" />
-                <span className="text-white">{localProfile.email}</span>
+                <span className="text-foreground">{localProfile.email}</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
                 <Phone className="w-4 h-4 text-muted-foreground" />
-                <span className="text-white">{localProfile.phone}</span>
+                <span className="text-foreground">{localProfile.phone}</span>
               </div>
               <div className="flex items-start gap-3 text-sm">
                 <MapPin className="w-4 h-4 text-muted-foreground mt-0.5" />
-                <span className="text-white flex-1">{localProfile.address}</span>
+                <span className="text-foreground flex-1">{localProfile.address}</span>
               </div>
               <div className="flex items-center gap-3 text-sm">
                 <ShieldCheck className="w-4 h-4 text-muted-foreground" />
-                <span className="text-white">PAN: <span className="font-mono">{localProfile.panNumber}</span></span>
+                <span className="text-foreground">PAN: <span className="font-mono">{localProfile.panNumber}</span></span>
               </div>
             </CardContent>
           </Card>
@@ -91,7 +91,7 @@ export default function UserDetail() {
             <Card className="bg-gradient-to-br from-[#151A21] to-[#0A0A0A]">
               <CardContent className="p-6">
                 <p className="text-sm text-muted-foreground mb-1">Total Invested</p>
-                <h3 className="text-3xl font-bold text-white">{formatCurrency(localProfile.totalInvested)}</h3>
+                <h3 className="text-3xl font-bold text-foreground">{formatCurrency(localProfile.totalInvested)}</h3>
               </CardContent>
             </Card>
             <Card className="bg-gradient-to-br from-[#151A21] to-[#0A0A0A]">
@@ -104,9 +104,9 @@ export default function UserDetail() {
               <CardContent className="p-6 flex justify-between items-center">
                 <div>
                   <p className="text-sm text-muted-foreground">Gifts Sent</p>
-                  <p className="text-2xl font-bold text-white mt-1">{localProfile.giftsSent}</p>
+                  <p className="text-2xl font-bold text-foreground mt-1">{localProfile.giftsSent}</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
                   <ArrowLeft className="w-5 h-5 text-primary rotate-45" />
                 </div>
               </CardContent>
@@ -115,9 +115,9 @@ export default function UserDetail() {
               <CardContent className="p-6 flex justify-between items-center">
                 <div>
                   <p className="text-sm text-muted-foreground">Gifts Received</p>
-                  <p className="text-2xl font-bold text-white mt-1">{localProfile.giftsReceived}</p>
+                  <p className="text-2xl font-bold text-foreground mt-1">{localProfile.giftsReceived}</p>
                 </div>
-                <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-full bg-muted flex items-center justify-center">
                   <ArrowLeft className="w-5 h-5 text-emerald-500 -rotate-[135deg]" />
                 </div>
               </CardContent>
@@ -129,17 +129,17 @@ export default function UserDetail() {
               <CardTitle>KYC Verification</CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="p-4 border border-white/10 rounded-xl bg-black/50 mb-6">
+              <div className="p-4 border border-border rounded-xl bg-muted mb-6">
                 <div className="flex items-start gap-4">
                   <div className="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center">
                     <ShieldCheck className="w-6 h-6 text-primary" />
                   </div>
                   <div className="flex-1">
-                    <h4 className="font-semibold text-white">Review Documents</h4>
+                    <h4 className="font-semibold text-foreground">Review Documents</h4>
                     <p className="text-sm text-muted-foreground mb-4">User has submitted PAN card and Address proof for verification.</p>
                     <div className="flex gap-3">
-                      <Button variant="outline" size="sm" className="bg-white/5">View PAN Card</Button>
-                      <Button variant="outline" size="sm" className="bg-white/5">View Address Proof</Button>
+                      <Button variant="outline" size="sm" className="bg-muted">View PAN Card</Button>
+                      <Button variant="outline" size="sm" className="bg-muted">View Address Proof</Button>
                     </div>
                   </div>
                 </div>
@@ -148,7 +148,7 @@ export default function UserDetail() {
               {localProfile.kycStatus === 'pending' && (
                 <div className="flex gap-4">
                   <Button 
-                    className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-white shadow-emerald-500/20"
+                    className="flex-1 bg-emerald-500 hover:bg-emerald-600 text-foreground shadow-emerald-500/20"
                     onClick={() => handleKycAction('verified')}
                     disabled={isUpdatingKyc}
                   >

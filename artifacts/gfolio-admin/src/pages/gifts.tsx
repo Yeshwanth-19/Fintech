@@ -44,7 +44,7 @@ export default function GiftsList() {
             className={`px-4 py-2 rounded-full text-sm font-medium capitalize whitespace-nowrap transition-colors ${
               activeTab === tab 
                 ? "bg-primary text-black" 
-                : "bg-white/5 text-muted-foreground hover:bg-white/10 hover:text-white"
+                : "bg-muted text-muted-foreground hover:bg-muted hover:text-foreground"
             }`}
           >
             {tab}
@@ -53,7 +53,7 @@ export default function GiftsList() {
       </div>
 
       <Card>
-        <div className="p-4 border-b border-white/5">
+        <div className="p-4 border-b border-border">
           <div className="relative w-full max-w-md">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <Input placeholder="Search gifts by ID, Sender, or Recipient..." className="pl-10" />
@@ -62,7 +62,7 @@ export default function GiftsList() {
 
         <div className="overflow-x-auto">
           <table className="w-full text-sm text-left">
-            <thead className="text-xs text-muted-foreground uppercase bg-white/5">
+            <thead className="text-xs text-muted-foreground uppercase bg-muted">
               <tr>
                 <th className="px-6 py-4 font-medium">Gift ID</th>
                 <th className="px-6 py-4 font-medium">Sender</th>
@@ -75,12 +75,12 @@ export default function GiftsList() {
             </thead>
             <tbody>
               {data.gifts.map((gift) => (
-                <tr key={gift.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                <tr key={gift.id} className="border-b border-border hover:bg-muted transition-colors">
                   <td className="px-6 py-4 font-mono text-xs text-primary">{gift.id}</td>
-                  <td className="px-6 py-4 font-medium text-white">{gift.senderName}</td>
-                  <td className="px-6 py-4 font-medium text-white">{gift.recipientName}</td>
+                  <td className="px-6 py-4 font-medium text-foreground">{gift.senderName}</td>
+                  <td className="px-6 py-4 font-medium text-foreground">{gift.recipientName}</td>
                   <td className="px-6 py-4">
-                    <p className="font-semibold text-white">{formatCurrency(gift.amount)}</p>
+                    <p className="font-semibold text-foreground">{formatCurrency(gift.amount)}</p>
                     <p className="text-xs text-muted-foreground">{gift.assetType}</p>
                   </td>
                   <td className="px-6 py-4">
@@ -92,7 +92,7 @@ export default function GiftsList() {
                     </Badge>
                   </td>
                   <td className="px-6 py-4">
-                    <p className="text-white">{formatDate(gift.createdAt)}</p>
+                    <p className="text-foreground">{formatDate(gift.createdAt)}</p>
                     <p className="text-xs text-muted-foreground">Exp: {formatDate(gift.expiresAt)}</p>
                   </td>
                   <td className="px-6 py-4 text-right">

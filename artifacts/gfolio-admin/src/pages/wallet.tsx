@@ -39,13 +39,13 @@ export default function CorporateWallet() {
           </div>
           <CardContent className="p-8 relative z-10">
             <p className="text-primary font-medium mb-2 uppercase tracking-wider text-sm">Available Balance</p>
-            <h2 className="text-5xl font-bold text-white mb-8 tracking-tight">{formatCurrency(wallet.balance)}</h2>
+            <h2 className="text-5xl font-bold text-foreground mb-8 tracking-tight">{formatCurrency(wallet.balance)}</h2>
             
             <div className="flex gap-4">
               <Button size="lg" className="gap-2 shadow-lg shadow-primary/20">
                 <Plus className="w-5 h-5" /> Add Funds
               </Button>
-              <Button size="lg" variant="outline" className="gap-2 bg-white/5 border-white/10">
+              <Button size="lg" variant="outline" className="gap-2 bg-muted border-border">
                 <ArrowDownRight className="w-5 h-5" /> Withdraw
               </Button>
             </div>
@@ -61,7 +61,7 @@ export default function CorporateWallet() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Total Added</p>
-                <p className="text-xl font-bold text-white">{formatCurrency(wallet.totalAdded)}</p>
+                <p className="text-xl font-bold text-foreground">{formatCurrency(wallet.totalAdded)}</p>
               </div>
             </CardContent>
           </Card>
@@ -72,7 +72,7 @@ export default function CorporateWallet() {
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">Total Spent</p>
-                <p className="text-xl font-bold text-white">{formatCurrency(wallet.totalSpent)}</p>
+                <p className="text-xl font-bold text-foreground">{formatCurrency(wallet.totalSpent)}</p>
               </div>
             </CardContent>
           </Card>
@@ -91,10 +91,10 @@ export default function CorporateWallet() {
               return (
                 <div key={dept.department}>
                   <div className="flex justify-between text-sm mb-2">
-                    <span className="font-medium text-white">{dept.department}</span>
+                    <span className="font-medium text-foreground">{dept.department}</span>
                     <span className="text-muted-foreground">{formatCurrency(dept.spent)} / {formatCurrency(dept.allocated)}</span>
                   </div>
-                  <div className="w-full h-2.5 bg-black rounded-full overflow-hidden border border-white/5">
+                  <div className="w-full h-2.5 bg-background rounded-full overflow-hidden border border-border">
                     <div 
                       className={`h-full rounded-full ${percent > 90 ? 'bg-red-500' : 'bg-primary'}`} 
                       style={{ width: `${percent}%` }}
@@ -114,18 +114,18 @@ export default function CorporateWallet() {
           <CardContent>
             <div className="space-y-4">
               {txns.map(txn => (
-                <div key={txn.id} className="flex items-center justify-between p-4 rounded-xl border border-white/5 bg-white/[0.02]">
+                <div key={txn.id} className="flex items-center justify-between p-4 rounded-xl border border-border bg-muted/50">
                   <div className="flex items-center gap-4">
                     <div className={`w-10 h-10 rounded-full flex items-center justify-center ${txn.type === 'credit' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}`}>
                       {txn.type === 'credit' ? <ArrowUpRight className="w-5 h-5" /> : <ArrowDownRight className="w-5 h-5" />}
                     </div>
                     <div>
-                      <p className="font-medium text-white">{txn.description}</p>
+                      <p className="font-medium text-foreground">{txn.description}</p>
                       <p className="text-xs text-muted-foreground">{formatDate(txn.createdAt)}</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className={`font-bold ${txn.type === 'credit' ? 'text-emerald-500' : 'text-white'}`}>
+                    <p className={`font-bold ${txn.type === 'credit' ? 'text-emerald-500' : 'text-foreground'}`}>
                       {txn.type === 'credit' ? '+' : '-'}{formatCurrency(txn.amount)}
                     </p>
                     <p className="text-xs text-muted-foreground">Bal: {formatCurrency(txn.balance)}</p>

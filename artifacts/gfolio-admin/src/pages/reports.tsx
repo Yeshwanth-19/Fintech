@@ -42,7 +42,7 @@ export default function Reports() {
               <TrendingUp className="w-6 h-6" />
               <h3 className="font-semibold">Total Value Distributed</h3>
             </div>
-            <p className="text-4xl font-bold text-white tracking-tight">{formatCurrency(dist.totalValue)}</p>
+            <p className="text-4xl font-bold text-foreground tracking-tight">{formatCurrency(dist.totalValue)}</p>
             <p className="text-sm text-muted-foreground mt-2">Across {dist.totalGifts.toLocaleString()} gifts total</p>
           </CardContent>
         </Card>
@@ -53,7 +53,7 @@ export default function Reports() {
               <TrendingUp className="w-6 h-6" />
               <h3 className="font-semibold">Average Redemption Rate</h3>
             </div>
-            <p className="text-4xl font-bold text-white tracking-tight">84.5%</p>
+            <p className="text-4xl font-bold text-foreground tracking-tight">84.5%</p>
             <p className="text-sm text-muted-foreground mt-2">Time to redeem: ~2.4 days average</p>
           </CardContent>
         </Card>
@@ -67,16 +67,16 @@ export default function Reports() {
           <div className="h-[400px] w-full mt-4">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={dist.byMonth} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#ffffff10" vertical={false} />
-                <XAxis dataKey="date" stroke="#ffffff50" tickLine={false} axisLine={false} />
-                <YAxis stroke="#ffffff50" tickLine={false} axisLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="#e5e7eb" vertical={false} />
+                <XAxis dataKey="date" stroke="#9ca3af" tickLine={false} axisLine={false} />
+                <YAxis stroke="#9ca3af" tickLine={false} axisLine={false} />
                 <RechartsTooltip 
-                  cursor={{ fill: '#ffffff05' }}
-                  contentStyle={{ backgroundColor: '#151A21', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                  itemStyle={{ color: '#fff' }}
+                  cursor={{ fill: 'rgba(22,163,74,0.05)' }}
+                  contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0,0,0,0.08)' }}
+                  itemStyle={{ color: '#111827' }}
                 />
                 <Legend />
-                <Bar dataKey="gifts" name="Gifts Distributed" fill="#F59E0B" radius={[4, 4, 0, 0]} maxBarSize={60} />
+                <Bar dataKey="gifts" name="Gifts Distributed" fill="#16a34a" radius={[4, 4, 0, 0]} maxBarSize={60} />
               </BarChart>
             </ResponsiveContainer>
           </div>

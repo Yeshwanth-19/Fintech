@@ -40,22 +40,22 @@ export default function NotificationsList() {
     <Layout title="Notifications & Comms">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         <div className="lg:col-span-1 space-y-6">
-          <h3 className="text-lg font-semibold text-white mb-4">Message Templates</h3>
+          <h3 className="text-lg font-semibold text-foreground mb-4">Message Templates</h3>
           {templates.map((tpl: any) => (
             <Card key={tpl.id} className={`${tpl.active ? 'border-primary/30' : 'opacity-60'} transition-all`}>
               <CardContent className="p-5">
                 <div className="flex justify-between items-start mb-3">
                   <div className="flex items-center gap-2">
-                    <span className="p-1.5 bg-white/10 rounded-md text-white">
+                    <span className="p-1.5 bg-muted rounded-md text-foreground">
                       {getIcon(tpl.channel)}
                     </span>
                     <Badge variant="outline" className="uppercase text-[10px] tracking-wider">{tpl.channel}</Badge>
                   </div>
                   <Badge variant={tpl.active ? 'success' : 'default'}>{tpl.active ? 'Active' : 'Inactive'}</Badge>
                 </div>
-                <h4 className="font-bold text-white text-lg mb-1">{tpl.name}</h4>
+                <h4 className="font-bold text-foreground text-lg mb-1">{tpl.name}</h4>
                 <p className="text-xs text-muted-foreground mb-4">Trigger: {tpl.trigger}</p>
-                <Button variant="outline" size="sm" className="w-full bg-transparent border-white/10">Edit Template</Button>
+                <Button variant="outline" size="sm" className="w-full bg-transparent border-border">Edit Template</Button>
               </CardContent>
             </Card>
           ))}
@@ -63,13 +63,13 @@ export default function NotificationsList() {
 
         <div className="lg:col-span-2">
           <Card>
-            <div className="p-6 border-b border-white/5 flex justify-between items-center">
-              <h3 className="text-lg font-semibold text-white">Delivery Logs</h3>
+            <div className="p-6 border-b border-border flex justify-between items-center">
+              <h3 className="text-lg font-semibold text-foreground">Delivery Logs</h3>
               <Button variant="outline" size="sm">Export Logs</Button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-sm text-left">
-                <thead className="text-xs text-muted-foreground uppercase bg-white/5">
+                <thead className="text-xs text-muted-foreground uppercase bg-muted">
                   <tr>
                     <th className="px-6 py-4 font-medium">Template / Recipient</th>
                     <th className="px-6 py-4 font-medium">Channel</th>
@@ -79,9 +79,9 @@ export default function NotificationsList() {
                 </thead>
                 <tbody>
                   {logs.logs.map((log: any) => (
-                    <tr key={log.id} className="border-b border-white/5 hover:bg-white/5 transition-colors">
+                    <tr key={log.id} className="border-b border-border hover:bg-muted transition-colors">
                       <td className="px-6 py-4">
-                        <p className="font-semibold text-white">{log.templateName}</p>
+                        <p className="font-semibold text-foreground">{log.templateName}</p>
                         <p className="text-xs text-muted-foreground mt-0.5">{log.recipient}</p>
                       </td>
                       <td className="px-6 py-4">

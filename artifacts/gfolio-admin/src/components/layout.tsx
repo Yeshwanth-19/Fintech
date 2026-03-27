@@ -3,10 +3,9 @@ import { Link, useLocation } from "wouter";
 import { motion } from "framer-motion";
 import { 
   LayoutDashboard, Users, Gift, ArrowRightLeft, 
-  Briefcase, Wallet, Bell, BarChart3, Settings, LogOut, Hexagon
+  Briefcase, Bell, BarChart3, Settings, LogOut, Leaf
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 const navItems = [
   { icon: LayoutDashboard, label: "Dashboard", href: "/" },
@@ -28,15 +27,19 @@ export function Sidebar() {
   const [location] = useLocation();
 
   return (
-    <div className="w-64 h-screen bg-[#0A0A0A] border-r border-white/5 flex flex-col fixed left-0 top-0 z-40">
-      <div className="p-6 flex items-center gap-3">
-        <div className="w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center text-primary">
-          <Hexagon className="w-5 h-5 fill-primary" />
+    <div className="w-64 h-screen bg-white border-r border-border flex flex-col fixed left-0 top-0 z-40 shadow-sm">
+      {/* Logo */}
+      <div className="p-6 flex items-center gap-3 border-b border-border">
+        <div className="w-9 h-9 rounded-xl flex items-center justify-center"
+          style={{ background: "linear-gradient(135deg, hsl(152,69%,35%), hsl(152,55%,50%))" }}>
+          <Leaf className="w-5 h-5 text-white" />
         </div>
-        <span className="text-xl font-bold tracking-tight text-white">Gfolio<span className="text-primary">.</span></span>
+        <span className="text-xl font-bold tracking-tight text-foreground">
+          Gfolio<span style={{ color: "hsl(38,92%,45%)" }}>.</span>
+        </span>
       </div>
 
-      <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-0.5 overflow-y-auto">
         {navItems.map((item) => {
           const isActive = location === item.href || (item.subItems && item.subItems.some(sub => location.startsWith(sub.href)));
           
@@ -47,23 +50,31 @@ export function Sidebar() {
                 className={cn(
                   "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-200 group",
                   isActive 
-                    ? "bg-primary/10 text-primary" 
-                    : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                    ? "sidebar-active font-semibold" 
+                    : "text-muted-foreground hover:bg-muted hover:text-foreground"
                 )}
               >
-                <item.icon className={cn("w-5 h-5", isActive ? "text-primary" : "text-muted-foreground group-hover:text-white")} />
+                <item.icon className={cn(
+                  "w-4.5 h-4.5 flex-shrink-0",
+                  isActive
+                    ? "text-primary"
+                    : "text-muted-foreground group-hover:text-foreground"
+                )} style={{ width: "1.1rem", height: "1.1rem" }} />
                 {item.label}
               </Link>
               
               {item.subItems && isActive && (
-                <div className="ml-9 mt-1 mb-2 space-y-1 border-l border-white/10 pl-2">
+                <div className="ml-9 mt-1 mb-2 space-y-0.5 border-l-2 pl-3"
+                  style={{ borderColor: "hsl(152,69%,35%,0.25)" }}>
                   {item.subItems.map(sub => (
                     <Link
                       key={sub.href}
                       href={sub.href}
                       className={cn(
-                        "block px-3 py-2 rounded-lg text-sm transition-colors",
-                        location === sub.href ? "text-primary font-medium" : "text-muted-foreground hover:text-white"
+                        "block px-3 py-1.5 rounded-lg text-sm transition-colors",
+                        location === sub.href
+                          ? "text-primary font-semibold"
+                          : "text-muted-foreground hover:text-foreground hover:bg-muted"
                       )}
                     >
                       {sub.label}
@@ -76,21 +87,25 @@ export function Sidebar() {
         })}
       </nav>
 
-      <div className="p-4 mt-auto border-t border-white/5">
-        <div className="flex items-center gap-3 px-3 py-2 rounded-xl text-sm text-muted-foreground hover:bg-white/5 hover:text-white transition-colors cursor-pointer mb-2">
-          <Settings className="w-5 h-5" />
+      <div className="p-3 mt-auto border-t border-border space-y-1">
+        <Link
+          href="/settings"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+        >
+          <Settings className="w-4 h-4" />
           Settings
-        </div>
+        </Link>
         
-        <div className="flex items-center gap-3 p-3 bg-card rounded-xl border border-white/5">
-          <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center text-primary font-bold">
+        <div className="flex items-center gap-3 p-3 bg-muted rounded-xl border border-border">
+          <div className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xs font-bold flex-shrink-0"
+            style={{ background: "linear-gradient(135deg, hsl(152,69%,35%), hsl(38,92%,50%))" }}>
             SA
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-white truncate">Admin User</p>
-            <p className="text-xs text-primary truncate">Super Admin</p>
+            <p className="text-sm font-semibold text-foreground truncate">Admin User</p>
+            <p className="text-xs font-medium truncate" style={{ color: "hsl(152,69%,35%)" }}>Super Admin</p>
           </div>
-          <button className="text-muted-foreground hover:text-white">
+          <button className="text-muted-foreground hover:text-destructive transition-colors">
             <LogOut className="w-4 h-4" />
           </button>
         </div>
@@ -101,12 +116,13 @@ export function Sidebar() {
 
 export function Header({ title }: { title: string }) {
   return (
-    <header className="h-20 bg-[#0A0A0A]/80 backdrop-blur-xl border-b border-white/5 sticky top-0 z-30 px-8 flex items-center justify-between">
-      <h1 className="text-2xl font-bold text-white tracking-tight">{title}</h1>
-      <div className="flex items-center gap-4">
-        <button className="relative p-2 text-muted-foreground hover:text-white transition-colors rounded-full hover:bg-white/5">
+    <header className="h-16 bg-white/90 backdrop-blur-xl border-b border-border sticky top-0 z-30 px-8 flex items-center justify-between shadow-sm">
+      <h1 className="text-xl font-bold text-foreground tracking-tight">{title}</h1>
+      <div className="flex items-center gap-3">
+        <button className="relative p-2 text-muted-foreground hover:text-foreground transition-colors rounded-xl hover:bg-muted">
           <Bell className="w-5 h-5" />
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-primary animate-pulse" />
+          <span className="absolute top-1.5 right-1.5 w-2 h-2 rounded-full animate-pulse"
+            style={{ backgroundColor: "hsl(38,92%,50%)" }} />
         </button>
       </div>
     </header>
