@@ -2,9 +2,9 @@ import * as React from "react";
 import { Layout } from "@/components/layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui";
 import { AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
-import { ArrowUpRight, ArrowDownRight, Wallet, Users, ArrowRightLeft, Gift, AlertTriangle, ChevronRight } from "lucide-react";
+import { ArrowUpRight, ArrowDownRight, Wallet, Users, ArrowRightLeft, Gift } from "lucide-react";
 import { formatCurrency } from "@/lib/utils";
-import { useGetDashboardMetrics, useGetTransactionTrends, useGetDashboardAlerts } from "@workspace/api-client-react";
+import { useGetDashboardMetrics, useGetTransactionTrends } from "@workspace/api-client-react";
 
 // Mocks for demonstration when API fails
 const MOCK_METRICS = {
@@ -21,40 +21,6 @@ const MOCK_METRICS = {
   failedTransactions: 12,
   unclaimedGifts: 89,
   settlementPending: 250000
-};
-
-const MOCK_ALERTS = [
-  { id: "1", type: "high_value_transaction", message: "Large withdrawal request of ₹5,00,000 pending approval", severity: "warning", timestamp: new Date(Date.now() - 10 * 60 * 1000).toISOString(), resolved: false },
-  { id: "2", type: "failed_transaction", message: "Payment gateway integration experienced 5 timeouts", severity: "critical", timestamp: new Date(Date.now() - 65 * 60 * 1000).toISOString(), resolved: false },
-  { id: "3", type: "kyc_pending", message: "127 KYC verifications pending for more than 48 hours", severity: "warning", timestamp: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(), resolved: false },
-  { id: "4", type: "settlement", message: "Settlement of ₹23,40,000 is pending beyond SLA", severity: "critical", timestamp: new Date(Date.now() - 26 * 60 * 60 * 1000).toISOString(), resolved: false },
-];
-
-function timeAgo(timestamp: string): string {
-  const now = Date.now();
-  const past = new Date(timestamp).getTime();
-  const diffMs = now - past;
-  const diffMins = Math.floor(diffMs / 60000);
-  if (diffMins < 1) return "just now";
-  if (diffMins < 60) return `${diffMins} min${diffMins > 1 ? "s" : ""} ago`;
-  const diffHours = Math.floor(diffMins / 60);
-  if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? "s" : ""} ago`;
-  const diffDays = Math.floor(diffHours / 24);
-  return `${diffDays} day${diffDays > 1 ? "s" : ""} ago`;
-}
-
-const ALERT_ACTIONS: Record<string, string> = {
-  high_value_transaction: "Review Transaction",
-  failed_transaction: "View Gateway Logs",
-  kyc_pending: "Go to KYC Queue",
-  settlement: "View Settlement",
-};
-
-const ALERT_ROUTES: Record<string, string> = {
-  high_value_transaction: "/transactions",
-  failed_transaction: "/transactions",
-  kyc_pending: "/users",
-  settlement: "/transactions",
 };
 
 const MOCK_TRENDS = [
@@ -78,47 +44,17 @@ const COLORS = ['#F59E0B', '#16a34a', '#86efac', '#fcd34d'];
 export default function Dashboard() {
   const { data: metricsData, isError: metricsError } = useGetDashboardMetrics();
   const { data: trendsData, isError: trendsError } = useGetTransactionTrends();
-  const { data: alertsData, isError: alertsError } = useGetDashboardAlerts();
 
-  const metrics = (metricsData && !metricsError) ? metricsData : MOCK_METRICS;
-  const trends = (trendsData && !trendsError) ? trendsData : MOCK_TRENDS;
-  const alerts = (alertsData && !alertsError) ? alertsData : MOCK_ALERTS;
+  const metricsRaw = (metricsData && !metricsError) ? metricsData : MOCK_METRICS;
+  const metrics = {
+    ...MOCK_METRICS,
+    ...(metricsRaw && typeof metricsRaw === "object" ? metricsRaw : {}),
+  };
+  const trendsRaw = (trendsData && !trendsError) ? trendsData : MOCK_TRENDS;
+  const trends = Array.isArray(trendsRaw) ? trendsRaw : MOCK_TRENDS;
 
   return (
     <Layout title="Dashboard Overview">
-      {/* Alerts Section */}
-      {alerts.length > 0 && (
-        <div className="mb-8 rounded-2xl border border-destructive/20 overflow-hidden bg-white shadow-sm">
-          {alerts.map((alert, i) => {
-            const isCritical = alert.severity === "critical";
-            const actionLabel = ALERT_ACTIONS[alert.type] ?? "Take Action";
-            const route = ALERT_ROUTES[alert.type] ?? "/";
-            return (
-              <div
-                key={alert.id}
-                className={`flex items-center gap-3 px-4 py-3 ${i < alerts.length - 1 ? "border-b border-destructive/10" : ""} ${isCritical ? "bg-red-50/60" : "bg-amber-50/50"} group`}
-              >
-                <AlertTriangle className={`w-4 h-4 shrink-0 ${isCritical ? "text-red-500" : "text-amber-500"}`} />
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium text-foreground truncate">{alert.message}</p>
-                  <p className="text-xs text-muted-foreground">{timeAgo(alert.timestamp)}</p>
-                </div>
-                <a
-                  href={route}
-                  className={`shrink-0 flex items-center gap-1 text-xs font-semibold px-3 py-1.5 rounded-full border transition-all whitespace-nowrap
-                    ${isCritical
-                      ? "text-red-600 border-red-200 bg-red-50 hover:bg-red-100"
-                      : "text-amber-700 border-amber-200 bg-amber-50 hover:bg-amber-100"
-                    }`}
-                >
-                  {actionLabel} <ChevronRight className="w-3.5 h-3.5" />
-                </a>
-              </div>
-            );
-          })}
-        </div>
-      )}
-
       {/* KPI Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
         <MetricCard 
@@ -129,13 +65,13 @@ export default function Dashboard() {
         />
         <MetricCard 
           title="Active Users" 
-          value={metrics.activeUsers.toLocaleString()} 
+          value={Number(metrics.activeUsers ?? 0).toLocaleString()} 
           change={metrics.userChange} 
           icon={Users} 
         />
         <MetricCard 
           title="Daily Transactions" 
-          value={metrics.dailyTransactions.toLocaleString()} 
+          value={Number(metrics.dailyTransactions ?? 0).toLocaleString()} 
           change={metrics.transactionChange} 
           icon={ArrowRightLeft} 
         />

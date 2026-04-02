@@ -63,7 +63,17 @@ function applyBaseUrl(input: RequestInfo | URL): RequestInfo | URL {
   // Only prepend to relative paths (starting with /)
   if (!url.startsWith("/")) return input;
 
-  const absolute = `${_baseUrl}${url}`;
+  let normalizedUrl = url;
+  try {
+    const basePath = new URL(_baseUrl).pathname.replace(/\/+$/, "");
+    if (/\/api(?:\/v\d+)?$/i.test(basePath) && url.startsWith("/api/")) {
+      normalizedUrl = url.slice(4);
+    }
+  } catch {
+    // Ignore invalid base URLs and fall back to direct concatenation.
+  }
+
+  const absolute = `${_baseUrl}${normalizedUrl}`;
   if (typeof input === "string") return absolute;
   if (isUrl(input)) return new URL(absolute);
   return new Request(absolute, input as Request);
@@ -357,7 +367,12 @@ export async function customFetch<T = unknown>(
 
   const requestInfo = { method, url: resolveUrl(input) };
 
-  const response = await fetch(input, { ...init, method, headers });
+  const response = await fetch(input, {
+    ...init,
+    method,
+    headers,
+    credentials: init.credentials ?? "include",
+  });
 
   if (!response.ok) {
     const errorData = await parseErrorBody(response, method);

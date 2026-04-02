@@ -12,8 +12,7 @@ import {
 } from "recharts";
 import { useGetDistributionReport } from "@workspace/api-client-react";
 import { formatCurrency } from "@/lib/utils";
-
-const BASE = import.meta.env.BASE_URL?.replace(/\/$/, "") ?? "";
+import { buildReportsApiUrl } from "@/lib/api-config";
 
 const TOOLTIP_STYLE = {
   contentStyle: { backgroundColor: "#fff", border: "1px solid #e5e7eb", borderRadius: "12px", boxShadow: "0 4px 12px rgba(0,0,0,0.08)" },
@@ -34,7 +33,7 @@ function useFetch<T>(url: string) {
   const [data, setData] = React.useState<T | null>(null);
   const [loading, setLoading] = React.useState(true);
   React.useEffect(() => {
-    fetch(`${BASE}${url}`)
+    fetch(buildReportsApiUrl(url), { credentials: "include" })
       .then(r => r.json()).then(setData).catch(() => setData(null)).finally(() => setLoading(false));
   }, [url]);
   return { data, loading };
@@ -99,7 +98,7 @@ function OverviewTab({ dist }: { dist: typeof MOCK_DIST }) {
 
 // ─── Finance Report tab ───────────────────────────────────────────────────────
 function FinanceTab() {
-  const { data, loading } = useFetch<any>("/api/reports/finance");
+  const { data, loading } = useFetch<any>("/reports/finance");
 
   const fin = data ?? {
     fy: "2024-25",
@@ -217,7 +216,7 @@ const MOCK_GST_ROWS = [
 ];
 
 function GSTTab() {
-  const { data } = useFetch<any>("/api/reports/gst");
+  const { data } = useFetch<any>("/reports/gst");
   const gst = data ?? {
     fy: "2024-25",
     rows: MOCK_GST_ROWS,
